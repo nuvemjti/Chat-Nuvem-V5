@@ -1,0 +1,47 @@
+raiz -> package-lock.json
+linha 2:   "name": "ZIONFLOWCOMINT", TO:   "name": "CHAT",
+
+---------------------
+
+backend -> package.json
+linha 3:   "version": "ZION-CRM 1.0.10", TO:  "version": "CHAT 1.0.10",
+linha 18:   "author": "zion tecnologia ltda", TO:   "author": "Nuvem JTi",
+
+---------------------
+
+frontend -> public (troca logos)
+
+frontend -> package.json
+linha 3:  "version": "ZION-CRM 5.6.33", TO:   "version": "CHAT 5.6.33",
+linha 5:  "nomeEmpresa": "Zion Tecnologia LTDA", TO:   "nomeEmpresa": "Nuvem JTi",
+
+frontend -> src/components/QrcodeModal/index.js
+linha 116: remover crm
+linha 121: remover crm
+
+frontend -> src/pages/Login/index.js
+linha 354: remover rodape
+linha 373: remover alterar senha
+linha 365: remover alterar senha
+linha 229: title para chat
+linha 300 abaixo: remover esqueceu senha, lembrar, sigup
+
+frontend -> src/layout/MainListItem.js
+linha 970: remover financeiro
+linha 898: remove chat-gpt
+
+frontend -> src/components/Settings/Options.js
+remover lgpd
+
+frontend -> src/pages/Connections/index.js
+remover chamar suporte
+remover face e insta
+corrigir nomes whatsapp
+
+frontend -> src/components/MessageInput/index.js
+linha 1136: remover menu de mensagens
+
+frontend -> src/pages/Dashboard/index.js
+remover funil campanhas
+incluir filtros datas
+remover face e insta
