@@ -45,3 +45,8 @@ frontend -> src/pages/Dashboard/index.js
 remover funil campanhas
 incluir filtros datas
 remover face e insta
+
+backend -> backend\src\services\WbotServices\CheckNumber.ts
+de  const wahtsappList = await GetDefaultWhatsApp(null, companyId);
+para  const wahtsappList = await GetDefaultWhatsApp(companyId, null);
+

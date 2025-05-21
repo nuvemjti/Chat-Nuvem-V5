@@ -92,12 +92,7 @@ import { IConnections, INodes } from "../WebhookService/DispatchWebHookService";
 import { FlowDefaultModel } from "../../models/FlowDefault";
 import { ActionsWebhookService } from "../WebhookService/ActionsWebhookService";
 import { WebhookModel } from "../../models/Webhook";
-import {
-  add,
-  differenceInMilliseconds,
-  hoursToMilliseconds,
-  minutesToMilliseconds
-} from "date-fns";
+import { add, differenceInMilliseconds } from "date-fns";
 import { FlowCampaignModel } from "../../models/FlowCampaign";
 import ShowTicketService from "../TicketServices/ShowTicketService";
 import { handleOpenAi } from "../IntegrationsServices/OpenAiService";
@@ -3748,8 +3743,6 @@ const flowbuilderIntegration = async (
 
   const whatsapp = await ShowWhatsAppService(wbot.id!, companyId);
 
-  console.log("log...", 3751);
-
   const listPhrase = await FlowCampaignModel.findAll({
     where: {
       whatsappId: whatsapp.id
@@ -3793,6 +3786,8 @@ const flowbuilderIntegration = async (
     }
   }
 
+
+
   const dateTicket = new Date(
     isFirstMsg?.updatedAt ? isFirstMsg.updatedAt : ""
   );
@@ -3800,16 +3795,11 @@ const flowbuilderIntegration = async (
   const diferencaEmMilissegundos = Math.abs(
     differenceInMilliseconds(dateTicket, dateNow)
   );
-
-  console.log(3804, diferencaEmMilissegundos);
-
-  const timeoutToCloseTicketInMilliseconds = minutesToMilliseconds(
-    whatsapp.timeCreateNewTicket
-  );
+  const seisHorasEmMilissegundos = 6 * 5000;
 
   if (
     listPhrase.filter(item => item.phrase === body).length === 0 &&
-    diferencaEmMilissegundos >= timeoutToCloseTicketInMilliseconds
+    diferencaEmMilissegundos >= seisHorasEmMilissegundos
   ) {
     console.log("2427", "handleMessageIntegration");
 
@@ -3846,6 +3836,7 @@ const flowbuilderIntegration = async (
       );
     }
   }
+
 
   // Campaign fluxo
   if (listPhrase.filter(item => item.phrase === body).length !== 0) {
@@ -3998,7 +3989,6 @@ export const handleMessageIntegration = async (
     // await typebots(ticket, msg, wbot, queueIntegration);
     await typebotListener({ ticket, msg, wbot, typebot: queueIntegration });
   } else if (queueIntegration.type === "flowbuilder") {
-    console.log("log...", 3996);
     await flowbuilderIntegration(
       msg,
       wbot,
@@ -4648,8 +4638,6 @@ const handleMessage = async (
       );
     }
 
-    console.log(4660, whatsapp);
-
     // Atualiza o ticket se a ultima mensagem foi enviada por mim, para que possa ser finalizado.
     try {
       console.log("log... 3258");
@@ -4671,8 +4659,6 @@ const handleMessage = async (
       currentSchedule = await VerifyCurrentSchedule(companyId, 0, whatsapp.id);
     }
 
-    console.log("log...", 4683);
-
     try {
       if (
         !msg.key.fromMe &&
@@ -4680,7 +4666,6 @@ const handleMessage = async (
         (!ticket.isGroup || whatsapp.groupAsTicket === "enabled") &&
         !["open", "group"].includes(ticket.status)
       ) {
-        console.log("log...", 4693);
         /**
          * Tratamento para envio de mensagem quando a empresa está fora do expediente
          */
@@ -4696,8 +4681,6 @@ const handleMessage = async (
             });
           }
 
-          console.log("log...", 4709);
-
           if (
             whatsapp.maxUseBotQueues &&
             whatsapp.maxUseBotQueues !== 0 &&
@@ -4705,8 +4688,6 @@ const handleMessage = async (
           ) {
             return;
           }
-
-          console.log("log...", 4719);
 
           if (whatsapp.timeUseBotQueues !== "0") {
             if (
@@ -4746,8 +4727,6 @@ const handleMessage = async (
             });
           }
 
-          console.log("log...", 4759);
-
           if (whatsapp.outOfHoursMessage !== "") {
             const body = formatBody(`${whatsapp.outOfHoursMessage}`, ticket);
             const debouncedSentMessage = debounce(
@@ -4781,7 +4760,6 @@ const handleMessage = async (
 
           return;
         }
-        console.log("log...", 4794);
       }
     } catch (e) {
       Sentry.captureException(e);
@@ -4793,6 +4771,7 @@ const handleMessage = async (
       !msg.key.fromMe &&
       !ticket.isGroup &&
       !ticket.queue &&
+      !ticket.user &&
       ticket.isBot &&
       ticket.status !== "open" &&
       !isNil(whatsapp.integrationId)
